@@ -1,3 +1,4 @@
+package volgensopdracht;
 import java.util.Random;
 
 public class Dobbelsteen {

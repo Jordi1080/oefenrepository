@@ -1,13 +1,15 @@
 import java.util.Scanner;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 // een passief-agressief spel
 public class YahtzeeSpel {
 	Scanner sc = new Scanner(System.in);
 	
-	ArrayList<Dobbelsteen> dobbelstenen;
+	ArrayList<Dobbelsteen> dobbelstenen = new ArrayList<Dobbelsteen>();
+	//blokkeerArray??
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -18,10 +20,17 @@ public class YahtzeeSpel {
 		YahtzeeSpel ys = new YahtzeeSpel();
 		
 		ys.spelen();
+
+		/*
+		System.out.println(ys.werpAlleDobbelstenen());
+		boolean[] vasteStenen = ys.vasthouden();
+		System.out.println(ys.werpGekozenDobbelstenen(vasteStenen));
+		*/
 		
 	}
 	
 	public YahtzeeSpel(){
+		// maak alle dobbelstenen, en voeg ze toe aan de ArrayList
 		Dobbelsteen d1 = new Dobbelsteen();
 		Dobbelsteen d2 = new Dobbelsteen();
 		Dobbelsteen d3 = new Dobbelsteen();
@@ -34,6 +43,11 @@ public class YahtzeeSpel {
 		dobbelstenen.add(d4);
 		dobbelstenen.add(d5);
 		
+		Speler bob = new Speler("Bob");
+		Speler cookie = new Speler("Cookie");
+		
+		
+		
 	}
 	
 	public void spelen(){
@@ -45,9 +59,13 @@ public class YahtzeeSpel {
 			switch (spelerInput){
 			case "g": 
 				werpAlleDobbelstenen();
+				boolean[] vastgehouden = vasthouden();
+				int[] nieuweWorp = werpGekozenDobbelstenen(vastgehouden);
+				break;
 			case "q":
 				System.out.println("Geen zorgen, niet iedereen kan even goed tegen zijn verlies.");
 				System.exit(0);
+				break;
 			default:
 				System.out.println("Kijk nog eens goed naar wat de opties waren...");
 				// break; niet?
@@ -56,15 +74,66 @@ public class YahtzeeSpel {
 	}
 	
 	public int[] werpAlleDobbelstenen(){
-		int[] worpen = {-1, -1, -1, -1, -1};
+		int[] worp = {-1, -1, -1, -1, -1};
 				
+		
+		/*
+		// zou dit werken? versie 1
 		for (Dobbelsteen d : dobbelstenen){
-			d.werpen();
-			worpen[d.get(dobbelstenen.index)]
+			// ??? hoe vraag je hier de index van de ArrayList?
+			worpen[dobbelstenen.indexOf(d)] = d.werpen();
+			System.out.println("Dobbelsteen " + d + ": " + worpen[dobbelstenen.indexOf(d)]);
 		}
-		return 
+		return worpen;
+		*/
+		
+		// alternatieve versie (moet nog getest worden)
+		for (int i = 0; i < dobbelstenen.size(); i++){
+			// ??? hoe vraag je hier de index van de ArrayList?
+			worp[i] = dobbelstenen.get(i).werpen();
+			System.out.print(worp[i] + " ");
+			
+			
+		}
+		return worp;
+	}
+	
+	public int[] werpGekozenDobbelstenen(boolean[] vastgehoudenStenen){
+		int[] nieuweWorp = Worp.steenWaardes;
+		System.out.println(Arrays.toString(nieuweWorp)); //test
+		
+		for (int i = 0; i < dobbelstenen.size(); i++){
+			if (vastgehoudenStenen[i] == false){
+				nieuweWorp[i] = dobbelstenen.get(i).werpen();
+				System.out.print(nieuweWorp[i] + " ");
+			}
+		}
+		System.out.println("uiteindelijke nieuwe worp: " + nieuweWorp); //test
+		return nieuweWorp;
 	}
 	
 
+	public boolean[] vasthouden(){
+		boolean[] welkeVasthouden = {false, false, false, false, false};
+		
+		System.out.println("Welke dobbelstenen wil je vasthouden? (typ 0 voor geen)");
+		String input = sc.nextLine();
+		
+		if (input.length() < 6){
+			for (int i = 0; i < input.length(); i++){
+				int convertedInput = Integer.parseInt(input.substring(i, i+1)) - 1; //input komt binnen als String, maar moet eerst een integer worden
+				welkeVasthouden[convertedInput] = true;
+			}
+		}
+		System.out.println(Arrays.toString(welkeVasthouden)); // methode nodig om arrays te printen
+		
+		for (int i = 0; i < dobbelstenen.size(); i++){ 
+			if (welkeVasthouden[i] == true){
+				
+			}
+			System.out.println("vastgehouden dobbelstenen: " + Arrays.toString(welkeVasthouden));
+		}
+		return welkeVasthouden;
+	}
 
 }
